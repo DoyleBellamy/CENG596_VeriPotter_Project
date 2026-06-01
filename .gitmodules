@@ -1,0 +1,6 @@
+[submodule "longeval-code"]
+	path = longeval-code
+	url = https://github.com/clef-longeval/longeval-code.git
+[submodule "ir-datasets-longeval"]
+	path = ir-datasets-longeval
+	url = https://github.com/clef-longeval/ir-datasets-longeval.git

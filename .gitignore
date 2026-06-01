@@ -1,0 +1,65 @@
+# ── Course template & personal files ─────────────────────────────────────────
+Ceng596_ProgressReportTemplate_2026/
+*.pdf
+
+# ── Original scripts with hardcoded personal paths (use scripts/ instead) ────
+setup_env.sh
+slurm_bm25.sh
+slurm_tfidf.sh
+slurm_dense.sh
+slurm_rrf.sh
+slurm_eval_dense.sh
+slurm_bm25_fulltext.sh
+slurm_bm25_fulltext_all.sh
+demo_plan.md
+
+# ── Large data & indexes (rebuild on target system) ──────────────────────────
+indexes/
+output/
+longeval_sci_training_2026_abstract/
+longeval_sci_training_2026_fulltext/
+*.zip
+
+# ── SLURM logs ────────────────────────────────────────────────────────────────
+logs/
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+
+# ── LaTeX build artifacts ─────────────────────────────────────────────────────
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.pdf
+
+# ── Environment ───────────────────────────────────────────────────────────────
+.env
+.venv
+env/
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── IDE ───────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+
+# ── Claude Code ───────────────────────────────────────────────────────────────
+.claude/

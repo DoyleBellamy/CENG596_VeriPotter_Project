@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LongEval 2026 – Paper Search</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; color: #222; }
+    h1   { font-size: 1.6em; margin-bottom: 4px; }
+    .subtitle { color: #666; font-size: 0.9em; margin-bottom: 24px; }
+    form { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; }
+    input[type=text]   { flex: 1; min-width: 260px; padding: 8px 12px; font-size: 1em; border: 1px solid #ccc; border-radius: 4px; }
+    input[type=number] { width: 70px; padding: 8px 8px; font-size: 1em; border: 1px solid #ccc; border-radius: 4px; }
+    button { padding: 8px 20px; font-size: 1em; background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #1d4ed8; }
+    .meta  { font-size: 0.85em; color: #555; margin-bottom: 24px; }
+    .error { color: #dc2626; margin-bottom: 16px; }
+    .result { border-bottom: 1px solid #e5e7eb; padding: 16px 0; }
+    .result:last-child { border-bottom: none; }
+    .rank  { display: inline-block; background: #2563eb; color: white; border-radius: 3px;
+             padding: 1px 7px; font-size: 0.8em; margin-right: 8px; vertical-align: middle; }
+    .title { font-size: 1.05em; font-weight: bold; }
+    .score { color: #6b7280; font-size: 0.85em; margin-left: 8px; }
+    .authors { color: #4b5563; font-size: 0.85em; margin: 4px 0; }
+    .abstract { color: #374151; font-size: 0.9em; margin-top: 6px; line-height: 1.5; }
+    label { font-size: 0.9em; color: #444; }
+  </style>
+</head>
+<body>
+  <h1>LongEval 2026 – Paper Search</h1>
+  <div class="subtitle">BM25 retrieval · snapshot-1 · 869,902 scientific papers</div>
+
+  <form action="/search" method="get">
+    <input type="text" name="q" placeholder="Enter your query…"
+           value="{{ query or '' }}" autofocus>
+    <label>Top <input type="number" name="n" value="{{ n or 10 }}" min="1" max="100"> results</label>
+    <button type="submit">Search</button>
+  </form>
+
+  {% if error %}
+    <div class="error">{{ error }}</div>
+  {% endif %}
+
+  {% if results is defined and query %}
+    <div class="meta">
+      {{ results|length }} results for <strong>"{{ query }}"</strong>
+    </div>
+
+    {% for r in results %}
+    <div class="result">
+      <div>
+        <span class="rank">#{{ r.rank }}</span>
+        <span class="title">{{ r.title or '(no title)' }}</span>
+        <span class="score">score: {{ r.score }}</span>
+      </div>
+      {% if r.authors %}
+      <div class="authors">{{ r.authors }}</div>
+      {% endif %}
+      {% if r.abstract %}
+      <div class="abstract">{{ r.abstract }}{% if r.abstract|length == 300 %}…{% endif %}</div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  {% endif %}
+</body>
+</html>
