@@ -1,17 +1,19 @@
 # ── Course template & personal files ─────────────────────────────────────────
 Ceng596_ProgressReportTemplate_2026/
+Ceng596_FinalReportTemplate_2026/
+PROJECT_SUMMARY.md
 *.pdf
 
 # ── Original scripts with hardcoded personal paths (use scripts/ instead) ────
-setup_env.sh
-slurm_bm25.sh
-slurm_tfidf.sh
-slurm_dense.sh
-slurm_rrf.sh
-slurm_eval_dense.sh
-slurm_bm25_fulltext.sh
-slurm_bm25_fulltext_all.sh
-demo_plan.md
+/setup_env.sh
+/slurm_bm25.sh
+/slurm_tfidf.sh
+/slurm_dense.sh
+/slurm_rrf.sh
+/slurm_eval_dense.sh
+/slurm_bm25_fulltext.sh
+/slurm_bm25_fulltext_all.sh
+/demo_plan.md
 
 # ── Large data & indexes (rebuild on target system) ──────────────────────────
 indexes/
@@ -63,3 +65,4 @@ Thumbs.db
 
 # ── Claude Code ───────────────────────────────────────────────────────────────
 .claude/
+progress_report_latex/

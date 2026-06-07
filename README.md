@@ -1,4 +1,4 @@
-# LongEval 2026 – Scientific Retrieval (CENG 596 Project)
+# CENG596_VeriPotter_Project
 
 CLEF 2026 LongEval Task 1: Scientific Document Retrieval. This project builds and evaluates a multi-stage retrieval pipeline over ~870k scientific papers from the [CORE](https://core.ac.uk) collection, studying how retrieval quality changes across three temporal snapshots.
 
@@ -8,19 +8,20 @@ CLEF 2026 LongEval Task 1: Scientific Document Retrieval. This project builds an
 
 ## Overview
 
-The challenge provides a corpus of scientific papers across 3 snapshots (training snapshot + 2 test snapshots). The goal is to retrieve the most relevant papers for 381 test queries, and measure how performance degrades over time (temporal robustness).
+The challenge provides a corpus of scientific papers across 3 snapshots (training snapshot + 2 test snapshots). The goal is to retrieve the most relevant papers for 338 test queries, and measure how performance degrades over time (temporal robustness).
 
-We implemented four retrieval methods:
+We implemented five retrieval methods evaluated on 100 training queries against snapshot-1:
 
-| Method | Description | nDCG@10 (training) |
-|---|---|---|
-| TF-IDF | SMART lnc.ltc weighting | 0.034 |
-| BM25 | PyTerrier / Terrier 5.11, default k1=1.2 b=0.75 | 0.345 |
-| Dense | Qwen3-Embedding-4B + FlexIndex (pyterrier-dr) | 0.380 |
-| RRF | Reciprocal Rank Fusion of BM25 + Dense, k=60 | 0.379 |
-| BM25-Fulltext | BM25 on full paper text (40% coverage) | 0.365 |
+| Method | Description | nDCG@10 | nDCG@20 | MAP | MRR |
+|---|---|---|---|---|---|
+| TF-IDF | SMART lnc.ltc weighting | 0.186 | 0.209 | 0.149 | 0.335 |
+| BM25 | PyTerrier / Terrier 5.11, k1=1.2 b=0.75 | 0.331 | 0.356 | 0.266 | 0.495 |
+| Dense | Qwen3-Embedding-4B + FlexIndex | 0.313 | 0.333 | 0.240 | 0.477 |
+| **RRF** | **Reciprocal Rank Fusion of BM25 + Dense, k=60** | **0.364** | **0.390** | **0.294** | **0.534** |
+| CrossEncoder | ms-marco-MiniLM-L-12-v2 reranking top-100 RRF | 0.344 | 0.376 | 0.278 | 0.514 |
+| BM25-Fulltext | BM25 on full paper text (40% doc coverage) | 0.365 | 0.387 | 0.292 | 0.544 |
 
-All scores are nDCG@10 on 100 training queries against snapshot-1.
+RRF achieves the best nDCG@10. CrossEncoder underperforms RRF due to domain mismatch — `ms-marco-MiniLM-L-12-v2` was trained on web search queries, not scientific literature.
 
 ---
 
@@ -39,9 +40,11 @@ All scores are nDCG@10 on 100 training queries against snapshot-1.
 │   ├── slurm_dense.sh          # Run Dense baseline (GPU required)
 │   ├── slurm_rrf.sh            # Run RRF fusion
 │   ├── slurm_eval_dense.sh     # Evaluate dense retrieval
+│   ├── slurm_rerank.sh         # Cross-encoder reranking evaluation (GPU required)
 │   └── slurm_bm25_fulltext_all.sh  # BM25 on fulltext corpus, all 3 snapshots
 │
 ├── eval_rrf.py                 # Evaluate BM25 + Dense + RRF on training queries
+├── eval_rerank.py              # Evaluate full pipeline including CrossEncoder reranking
 ├── eval_dense.py               # Evaluate dense retrieval on training queries
 ├── eval_fulltext.py            # Compare abstract vs fulltext BM25
 ├── bm25_fulltext.py            # BM25 indexing + retrieval on fulltext corpus (snapshot-1)
@@ -64,8 +67,8 @@ All scores are nDCG@10 on 100 training queries against snapshot-1.
 ### 1. Clone with submodules
 
 ```bash
-git clone --recurse-submodules https://github.com/YOUR_USERNAME/longeval-2026.git
-cd longeval-2026
+git clone --recurse-submodules https://github.com/DoyleBellamy/CENG596_VeriPotter_Project.git
+cd CENG596_VeriPotter_Project
 ```
 
 Or if you already cloned without submodules:
@@ -189,6 +192,9 @@ Combines BM25 and Dense rankings:
 ```
 RRF_score(doc) = 1/(60 + rank_bm25) + 1/(60 + rank_dense)
 ```
+
+### CrossEncoder Reranking
+Takes top-100 documents from RRF and rescores each `(query, title + abstract)` pair using `cross-encoder/ms-marco-MiniLM-L-12-v2`. Despite being a stronger model in general, it underperforms RRF on this dataset due to domain mismatch with scientific text.
 
 ---
 
